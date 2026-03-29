@@ -1,5 +1,5 @@
 const users = {
-  'ADM001': { pass:'admin123', name:'Admin LogiCorp', role:'Administrator', div:'Manajemen', pos:'Administrator', email:'admin@logicorp.id', salary:'Rp 8.500.000', av:'AD', color:'#f97316' },
+  'ADMIN': { pass:'admin', name:'Admin LogiCorp', role:'Administrator', div:'Manajemen', pos:'Administrator', email:'admin@logicorp.id', salary:'Rp 8.500.000', av:'AD', color:'#f97316' },
   'EMP001': { pass:'emp123', name:'Agus Santoso', role:'Karyawan', div:'Pengemudi', pos:'Driver Senior', email:'agus@logicorp.id', salary:'Rp 5.500.000', av:'AS', color:'#3b82f6' },
   'HRD001': { pass:'hrd123', name:'Hani Pertiwi', role:'HRD Manager', div:'HRD', pos:'HRD Manager', email:'hani@logicorp.id', salary:'Rp 9.000.000', av:'HP', color:'#10b981' }
 };
