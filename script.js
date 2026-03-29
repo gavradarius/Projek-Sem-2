@@ -67,6 +67,57 @@ function updateDate() {
   document.getElementById('todayDate').textContent = d.toLocaleDateString('id-ID', opts);
 }
 
+let customSchedules = [];
+
+function addCustomSchedule() {
+  const karyawan = document.getElementById('fleksEmp').value;
+  const tanggal = document.getElementById('fleksDate').value;
+  const shift = document.getElementById('fleksShift').value;
+  const catatan = document.getElementById('fleksCat').value;
+  
+  if(karyawan === 'Pilih karyawan...') {
+    showToast('❌ Pilih karyawan terlebih dahulu!');
+    return;
+  }
+  
+  const tglObj = new Date(tanggal);
+  const tglFormat = tglObj.toLocaleDateString('id-ID', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  
+  const schedule = {
+    id: Date.now(),
+    karyawan: karyawan,
+    tanggal: tglFormat,
+    shift: shift,
+    catatan: catatan || 'Jadwal custom'
+  };
+  customSchedules.push(schedule);
+  updateCustomScheduleDisplay();
+  showToast('✅ Jadwal custom berhasil ditambahkan!');
+}
+
+function updateCustomScheduleDisplay() {
+  const list = document.getElementById('customScheduleList');
+  if(customSchedules.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:12px">Belum ada jadwal custom</div>';
+    return;
+  }
+  list.innerHTML = customSchedules.map((s, i) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:var(--white);border-radius:6px;border-left:3px solid var(--accent);margin-bottom:6px">
+      <div>
+        <strong style="font-size:13px">${s.karyawan}</strong><br>
+        <span style="font-size:11px;color:var(--muted)">${s.tanggal} • ${s.shift}${s.catatan ? ' • ' + s.catatan : ''}</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="removeCustomSchedule(${s.id})">Hapus</button>
+    </div>
+  `).join('');
+}
+
+function removeCustomSchedule(id) {
+  customSchedules = customSchedules.filter(s => s.id !== id);
+  updateCustomScheduleDisplay();
+  showToast('🗑️ Jadwal custom dihapus');
+}
+
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -140,3 +191,4 @@ function filterByDivisi(sel) {
 }
 
 updateDate();
+updateCustomScheduleDisplay();

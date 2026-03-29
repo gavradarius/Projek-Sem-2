@@ -300,12 +300,13 @@ tbody td { padding:15px 20px; font-size:14px; color:var(--text); }
 .info-row .val { color:var(--text); font-weight:500; }
 
 /* MODAL */
-.modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.5); z-index:500;
+.modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.5); z-index:999;
   display:none; align-items:center; justify-content:center; backdrop-filter:blur(6px); }
 .modal-overlay.open { display:flex; }
 .modal { background:var(--card); border:1px solid var(--border); border-radius:20px;
-  padding:32px; width:500px; max-width:90vw; max-height:80vh; overflow-y:auto; position:relative;
+  padding:32px; width:500px; max-width:90vw; max-height:85vh; overflow:auto; position:relative;
   box-shadow:0 20px 60px rgba(15,23,42,0.15); }
+.modal select { z-index:9999; position:relative; }
 .modal h3 { font-family:'DM Sans',sans-serif; font-size:20px; font-weight:700; margin-bottom:24px; color:var(--text); letter-spacing:-0.3px; }
 .modal-close { position:absolute; top:20px; right:20px; background:var(--bg3); border:none;
   color:var(--text); width:36px; height:36px; border-radius:8px; cursor:pointer; font-size:18px; transition:.2s; }
@@ -314,8 +315,9 @@ tbody td { padding:15px 20px; font-size:14px; color:var(--text); }
 .form-label { display:block; font-size:13px; font-weight:600; color:var(--text);
   text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
 .form-input { width:100%; background:var(--bg3); border:1.5px solid var(--border); border-radius:10px;
-  padding:12px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; }
+  padding:12px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; z-index:10000; }
 .form-input:focus { border-color:var(--accent); background:var(--white); box-shadow:0 0 0 3px rgba(14,165,233,0.1); }
+.form-input[type="file"], .form-input[type="date"], .form-input[type="month"], .form-input[type="time"] { cursor:pointer; }
 textarea.form-input { resize:vertical; min-height:80px; }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }

@@ -224,12 +224,13 @@
 
       <!-- ABSENSI -->
       <div class="page" id="page-absensi">
-        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center">
+        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap">
           <select class="select-box" onchange="updateMonth(this)">
             <option>Maret 2026</option><option>Februari 2026</option><option>Januari 2026</option>
           </select>
           <input class="search-box" style="width:220px" placeholder="🔍 Cari karyawan...">
-          <button class="btn btn-primary" onclick="showToast('Laporan absensi diunduh!')">📥 Export Excel</button>
+          <button class="btn btn-primary" onclick="openModal('uploadAbsenModal')">📤 Upload Absensi</button>
+          <button class="btn btn-ghost" onclick="showToast('Laporan absensi diunduh!')">📥 Export Excel</button>
         </div>
         <div class="table-card" style="margin-bottom:16px;padding:20px">
           <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:12px">📅 Kalender Absensi — Maret 2026</h3>
@@ -267,9 +268,22 @@
             </tbody>
           </table>
         </div>
+        <div class="table-card">
+          <div class="table-head"><h3>📋 Contoh Pelanggaran & SP yang Diberikan</h3></div>
+          <table>
+            <thead><tr><th>Jenis Pelanggaran</th><th>Kategori</th><th>Contoh</th><th>SP yang Diberikan</th><th>Catatan</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:600;color:var(--warn)">Telat 5-15 Menit</td><td><span class="badge yellow">Ringan</span></td><td>Datang pukul 07:12 (shift 07:00)</td><td><span class="badge yellow">Teguran Lisan</span></td><td>Tidak diberikan SP, hanya teguran</td></tr>
+              <tr><td style="font-weight:600;color:var(--warn)">Telat 16-30 Menit</td><td><span class="badge orange">Sedang</span></td><td>Datang pukul 07:25 (shift 07:00)</td><td><span class="badge yellow">SP-I - Catatan Resmi</span></td><td>Jika telat >2x per bulan dapat SP</td></tr>
+              <tr><td style="font-weight:600;color:var(--danger)">Telat >30 Menit</td><td><span class="badge orange">Sedang</span></td><td>Datang pukul 07:45 (shift 07:00)</td><td><span class="badge orange">SP-I - Pengurangan Gaji 10%</span></td><td>Pengurangan per hari, max 50% gaji</td></tr>
+              <tr><td style="font-weight:600;color:var(--danger)">Absen Tanpa Keterangan (1 hari)</td><td><span class="badge red">Berat</span></td><td>Tidak daftar dan tidak informasi</td><td><span class="badge orange">SP-I</span></td><td>Potongan gaji 1 hari penuh</td></tr>
+              <tr><td style="font-weight:600;color:var(--danger)">Absen Tanpa Keterangan (2+ hari)</td><td><span class="badge red">Berat</span></td><td>Tidak masuk >2 hari berturut-turut</td><td><span class="badge red">SP-II</span></td><td>Potongan gaji + SP-II diberikan</td></tr>
+              <tr><td style="font-weight:600;color:var(--danger)">Absen 5+ Hari/Bulan</td><td><span class="badge red">Berat Sekali</span></td><td>Absen total 5 hari dalam sebulan</td><td><span class="badge red">SP-III - Pertimbangan PHK</span></td><td>Dapat dilanjutkan PHK jika berlanjut</td></tr>
+              <tr><td style="font-weight:600;color:var(--accent2)">Izin (dengan surat)</td><td><span class="badge blue">Resmi</span></td><td>Cuti, izin keluarga, sakit</td><td><span class="badge green">✓ Disetujui</span></td><td>Tidak ada potongan jika dokumen lengkap</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-
-      <!-- GAJI -->
       <div class="page" id="page-gaji">
         <div class="salary-filter">
           <select class="select-box"><option>Maret 2026</option><option>Februari 2026</option></select>
@@ -298,9 +312,17 @@
 
       <!-- JADWAL SHIFT -->
       <div class="page" id="page-shift">
-        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center">
+        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap">
           <select class="select-box"><option>Minggu ini (24-30 Mar)</option><option>Minggu depan</option></select>
-          <button class="btn btn-primary" onclick="openModal('shiftModal')">+ Atur Jadwal</button>
+          <button class="btn btn-primary" onclick="openModal('shiftModal')">+ Atur Jadwal Minggu</button>
+          <button class="btn btn-primary" onclick="openModal('shiftFleksModal')">+ Tambah Jadwal Custom</button>
+        </div>
+        <div class="table-card" style="margin-bottom:16px;padding:15px;background:var(--inform)">
+          <div style="display:flex;gap:10px;align-items:center">
+            <span style="font-size:18px">ℹ️</span>
+            <div><strong>Jadwal Custom Terbaru</strong><br><span style="font-size:12px;color:var(--muted)">Jadwal yang ditambahkan di luar pola mingguan reguler</span></div>
+          </div>
+          <div id="customScheduleList" style="margin-top:12px"></div>
         </div>
         <div class="table-card" style="padding:20px;margin-bottom:16px">
           <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px">Jadwal Shift Minggu Ini</h3>
@@ -569,13 +591,37 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="uploadAbsenModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('uploadAbsenModal')">✕</button>
+    <h3>📤 Upload Data Absensi</h3>
+    <div class="form-group"><label class="form-label">Pilih Bulan/Tahun</label><input class="form-input" type="month" value="2026-03"></div>
+    <div class="form-group"><label class="form-label">Unggah File (CSV/Excel)</label><input class="form-input" type="file" accept=".csv,.xlsx" style="cursor:pointer"></div>
+    <div class="form-group" style="background:var(--bg2);padding:12px;border-radius:8px;font-size:12px;color:var(--muted)">
+      <strong>Format File:</strong><br>Kolom: ID Karyawan | Nama | Tanggal | Check-In | Check-Out | Status (Hadir/Telat/Absen/Izin)
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('uploadAbsenModal')">Batal</button><button class="btn btn-primary" onclick="closeModal('uploadAbsenModal');showToast('Data absensi berhasil diunggah!')">Unggah</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shiftFleksModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('shiftFleksModal')">✕</button>
+    <h3>📅 Tambah Jadwal Custom (Kapan Saja)</h3>
+    <div class="form-group"><label class="form-label">Karyawan</label><select class="form-input" id="fleksEmp"><option>Pilih karyawan...</option><option>Agus Santoso (EMP001)</option><option>Siti Rahmawati (EMP002)</option><option>Bambang Widodo (EMP003)</option><option>Maya Puspitasari (EMP004)</option><option>Dian Kusuma (EMP005)</option></select></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Tanggal (Pilih Tanggal Apapun)</label><input class="form-input" id="fleksDate" type="date" value="2026-03-29"></div><div class="form-group"><label class="form-label">Shift</label><select class="form-input" id="fleksShift"><option>Pagi (07:00-15:00)</option><option>Siang (15:00-23:00)</option><option>Malam (23:00-07:00)</option></select></div></div>
+    <div class="form-group"><label class="form-label">Catatan (Opsional)</label><textarea class="form-input" id="fleksCat" placeholder="Cth: Jadwal ganti, shift emergency, dll"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('shiftFleksModal')">Batal</button><button class="btn btn-primary" onclick="addCustomSchedule();closeModal('shiftFleksModal')">Tambahkan</button></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="shiftModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('shiftModal')">✕</button>
-    <h3>🔄 Atur Jadwal Shift</h3>
-    <div class="form-group"><label class="form-label">Karyawan</label><select class="form-input"><option>Pilih karyawan...</option></select></div>
+    <h3>🔄 Atur Jadwal Shift Mingguan</h3>
+    <div class="form-group"><label class="form-label">Karyawan</label><select class="form-input"><option>Pilih karyawan...</option><option>Agus Santoso (EMP001)</option><option>Siti Rahmawati (EMP002)</option><option>Bambang Widodo (EMP003)</option><option>Maya Puspitasari (EMP004)</option><option>Dian Kusuma (EMP005)</option></select></div>
     <div class="form-row"><div class="form-group"><label class="form-label">Hari</label><select class="form-input"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option></select></div><div class="form-group"><label class="form-label">Shift</label><select class="form-input"><option>Pagi (07:00-15:00)</option><option>Siang (15:00-23:00)</option><option>Malam (23:00-07:00)</option></select></div></div>
-    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('shiftModal')">Batal</button><button class="btn btn-primary" onclick="closeModal('shiftModal');showToast('Jadwal shift berhasil diperbarui!')">Simpan</button></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('shiftModal')">Batal</button><button class="btn btn-primary" onclick="closeModal('shiftModal');showToast('Jadwal shift mingguan berhasil diperbarui!')">Simpan</button></div>
   </div>
 </div>
 
