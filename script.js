@@ -198,10 +198,12 @@ function toggleSidebar() {
   if (isOpen) {
     sidebar.classList.remove('open');
     hamburger.classList.remove('open');
+    document.body.classList.remove('sidebar-open');
     document.body.style.overflow = '';
   } else {
     sidebar.classList.add('open');
     hamburger.classList.add('open');
+    document.body.classList.add('sidebar-open');
     document.body.style.overflow = 'hidden';
   }
 }
