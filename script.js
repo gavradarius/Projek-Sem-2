@@ -190,5 +190,45 @@ function filterByDivisi(sel) {
   });
 }
 
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const hamburger = document.getElementById('hamburgerMenu');
+  const isOpen = sidebar.classList.contains('open');
+
+  if (isOpen) {
+    sidebar.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  } else {
+    sidebar.classList.add('open');
+    hamburger.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+  const sidebar = document.querySelector('.sidebar');
+  const hamburger = document.getElementById('hamburgerMenu');
+
+  if (window.innerWidth <= 767) {
+    if (!sidebar.contains(event.target) && !hamburger.contains(event.target) && sidebar.classList.contains('open')) {
+      toggleSidebar();
+    }
+  }
+});
+
+// Handle window resize
+window.addEventListener('resize', function() {
+  const sidebar = document.querySelector('.sidebar');
+  const hamburger = document.getElementById('hamburgerMenu');
+
+  if (window.innerWidth > 767) {
+    sidebar.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
 updateDate();
 updateCustomScheduleDisplay();

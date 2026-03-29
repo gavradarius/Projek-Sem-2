@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sistem Manajemen Karyawan LogiCorp - Absensi, Gaji, dan Pengelolaan Karyawan">
+<meta name="keywords" content="HR, absensi, gaji, karyawan, logistik, management">
+<meta name="author" content="LogiCorp">
+<meta name="theme-color" content="#0ea5e9">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚚</text></svg>">
 <title>LogiCorp — Sistem Manajemen Karyawan</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -77,7 +83,14 @@
   <!-- MAIN -->
   <div class="main">
     <div class="topbar">
-      <h2 id="pageTitle">Dashboard</h2>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="hamburger" onclick="toggleSidebar()" id="hamburgerMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <h2 id="pageTitle">Dashboard</h2>
+      </div>
       <div class="topbar-right">
         <div class="date-badge" id="todayDate"></div>
         <div class="notif-btn" onclick="alert('3 notifikasi baru')">🔔<div class="notif-dot"></div></div>
@@ -629,5 +642,33 @@
 <div class="toast" id="toast"></div>
 
 <script src="script.js"></script>
+<script>
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('SW registered: ', registration);
+      })
+      .catch(registrationError => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  // Show install button or notification
+  showToast('📱 Tap untuk install sebagai app!');
+});
+
+window.addEventListener('appinstalled', (evt) => {
+  showToast('✅ App berhasil diinstall!');
+});
+</script>
 </body>
 </html>
