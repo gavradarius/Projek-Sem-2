@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogiCorp — Sistem Manajemen Karyawan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="icon logo.jpeg" alt="LogiCorp" class="ico">
+      <div>
+        <h1>LogiCorp</h1>
+        <p style="font-size:11px;color:var(--muted);margin-top:1px">Logistik & pengiriman</p>
+      </div>
+    </div>
+    <p class="login-sub" style="margin-top:8px">Masuk dengan ID Karyawan dan password Anda</p>
+    <label class="login-label">ID Karyawan</label>
+    <input class="login-input" id="loginId" placeholder="Contoh: EMP001" />
+    <label class="login-label">Password</label>
+    <input class="login-input" id="loginPass" type="password" placeholder="••••••••" />
+    <button class="login-btn" onclick="doLogin()">Masuk ke Sistem</button>
+    <div class="login-err" id="loginErr">❌ ID atau password salah. Coba lagi.</div>
+    <div class="login-hint">
+      <strong>Demo Akses:</strong><br>
+      Admin: <strong>ADM001</strong> / <strong>admin123</strong><br>
+      Karyawan: <strong>EMP001</strong> / <strong>emp123</strong><br>
+      HRD: <strong>HRD001</strong> / <strong>hrd123</strong>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">
+        <img src="icon logo.jpeg" alt="LogiCorp" class="ico">
+        <div>
+          <h2>LogiCorp</h2>
+          <p>HR Management System</p>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="av" id="sideAv" style="background:var(--accent)">A</div>
+      <div class="info">
+        <h4 id="sidebarName">Admin</h4>
+        <p id="sidebarRole">Administrator</p>
+      </div>
+    </div>
+    <nav>
+      <div class="nav-section">Menu Utama</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="ni">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('profil',this)"><span class="ni">👤</span> Profil Saya</div>
+      <div class="nav-section">Pengelolaan</div>
+      <div class="nav-item" onclick="showPage('karyawan',this)"><span class="ni">👥</span> Data Karyawan</div>
+      <div class="nav-item" onclick="showPage('absensi',this)"><span class="ni">📅</span> Absensi</div>
+      <div class="nav-item" onclick="showPage('gaji',this)"><span class="ni">💰</span> Penggajian</div>
+      <div class="nav-item" onclick="showPage('shift',this)"><span class="ni">🔄</span> Jadwal Shift</div>
+      <div class="nav-section">Administrasi</div>
+      <div class="nav-item" onclick="showPage('sp',this)"><span class="ni">⚠️</span> Surat Pelanggaran <span class="nav-badge">3</span></div>
+      <div class="nav-item" onclick="showPage('chat',this)"><span class="ni">💬</span> Chat HRD <span class="nav-badge">2</span></div>
+      <div class="nav-item" onclick="showPage('laporan',this)"><span class="ni">📋</span> Laporan</div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="logout-btn" onclick="doLogout()">🚪 Keluar dari Sistem</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <h2 id="pageTitle">Dashboard</h2>
+      <div class="topbar-right">
+        <div class="date-badge" id="todayDate"></div>
+        <div class="notif-btn" onclick="alert('3 notifikasi baru')">🔔<div class="notif-dot"></div></div>
+        <div class="av" id="topAv" style="background:var(--accent);cursor:pointer" onclick="showPage('profil',null)">A</div>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card orange"><div class="stat-icon">👥</div><div class="stat-val">248</div><div class="stat-label">Total Karyawan</div><div class="stat-change up">↑ 4 bulan ini</div></div>
+          <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-val">231</div><div class="stat-label">Hadir Hari Ini</div><div class="stat-change up">↑ 93.1% kehadiran</div></div>
+          <div class="stat-card blue"><div class="stat-icon">💰</div><div class="stat-val">Rp 2,4M</div><div class="stat-label">Total Gaji Bulan Ini</div><div class="stat-change down">Belum diproses: 12</div></div>
+          <div class="stat-card red"><div class="stat-icon">⚠️</div><div class="stat-val">7</div><div class="stat-label">SP Aktif</div><div class="stat-change down">↑ 2 minggu ini</div></div>
+        </div>
+        <div class="two-col">
+          <div class="table-card">
+            <div class="table-head"><h3>Karyawan Terbaru</h3><button class="btn btn-ghost btn-sm" onclick="showPage('karyawan',null)">Lihat Semua</button></div>
+            <table>
+              <thead><tr><th>Karyawan</th><th>Divisi</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><div class="emp-cell"><div class="emp-av" style="background:#3b82f6">BW</div><div><div style="font-weight:600">Budi Wicaksono</div><div style="font-size:11px;color:var(--muted)">EMP244</div></div></div></td><td>Logistik</td><td><span class="badge green">Aktif</span></td></tr>
+                <tr><td><div class="emp-cell"><div class="emp-av" style="background:#10b981">SR</div><div><div style="font-weight:600">Sari Rahayu</div><div style="font-size:11px;color:var(--muted)">EMP245</div></div></div></td><td>Administrasi</td><td><span class="badge green">Aktif</span></td></tr>
+                <tr><td><div class="emp-cell"><div class="emp-av" style="background:#f97316">RH</div><div><div style="font-weight:600">Rudi Hartono</div><div style="font-size:11px;color:var(--muted)">EMP246</div></div></div></td><td>Pengemudi</td><td><span class="badge yellow">Probasi</span></td></tr>
+                <tr><td><div class="emp-cell"><div class="emp-av" style="background:#8b5cf6">IN</div><div><div style="font-weight:600">Indah Nuraini</div><div style="font-size:11px;color:var(--muted)">EMP247</div></div></div></td><td>Gudang</td><td><span class="badge green">Aktif</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-card">
+            <div class="table-head"><h3>Aktivitas Terbaru</h3></div>
+            <div class="activity-list">
+              <div class="activity-item"><div class="act-dot" style="background:var(--accent3)"></div><div><div class="act-text"><strong>Eko Prasetyo</strong> telah check-in pukul 07:52</div><div class="act-time">2 menit lalu</div></div></div>
+              <div class="activity-item"><div class="act-dot" style="background:var(--danger)"></div><div><div class="act-text">SP-I diterbitkan untuk <strong>Dian Kusuma</strong></div><div class="act-time">1 jam lalu</div></div></div>
+              <div class="activity-item"><div class="act-dot" style="background:var(--accent2)"></div><div><div class="act-text">Komplain baru dari <strong>Andi Firmansyah</strong> ke HRD</div><div class="act-time">2 jam lalu</div></div></div>
+              <div class="activity-item"><div class="act-dot" style="background:var(--accent)"></div><div><div class="act-text">Gaji bulan Maret diproses untuk <strong>78 karyawan</strong></div><div class="act-time">Kemarin</div></div></div>
+              <div class="activity-item"><div class="act-dot" style="background:var(--accent3)"></div><div><div class="act-text"><strong>4 karyawan baru</strong> bergabung bulan ini</div><div class="act-time">3 hari lalu</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-head"><h3>Absensi Hari Ini — 27 Maret 2026</h3>
+            <div style="display:flex;gap:10px">
+              <span class="badge green">Hadir: 231</span>
+              <span class="badge yellow">Telat: 8</span>
+              <span class="badge red">Absen: 9</span>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Karyawan</th><th>Divisi</th><th>Check-In</th><th>Check-Out</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#f97316">AS</div><div><div style="font-weight:600">Agus Santoso</div><div style="font-size:11px;color:var(--muted)">EMP001</div></div></div></td><td>Pengemudi</td><td>07:45</td><td>16:30</td><td><span class="badge green">Hadir</span></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#3b82f6">DP</div><div><div style="font-weight:600">Dewi Putri</div><div style="font-size:11px;color:var(--muted)">EMP012</div></div></div></td><td>Admin</td><td>08:23</td><td>17:05</td><td><span class="badge yellow">Telat</span></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#ef4444">FN</div><div><div style="font-weight:600">Fadli Nugroho</div><div style="font-size:11px;color:var(--muted)">EMP034</div></div></div></td><td>Gudang</td><td>—</td><td>—</td><td><span class="badge red">Absen</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PROFIL -->
+      <div class="page" id="page-profil">
+        <div class="profile-hero">
+          <div class="profile-av" id="profAv" style="background:var(--accent)">AD</div>
+          <div class="profile-info">
+            <h2 id="profName">Administrator</h2>
+            <p id="profRole">HRD & Administrator Sistem</p>
+            <div class="tags" id="profTags">
+              <span class="badge blue">ADM001</span>
+              <span class="badge green">Aktif</span>
+              <span class="badge orange">Penuh Waktu</span>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <div class="ps"><div class="val">3 th</div><div class="lbl">Masa Kerja</div></div>
+            <div class="ps"><div class="val">97%</div><div class="lbl">Kehadiran</div></div>
+            <div class="ps"><div class="val">0</div><div class="lbl">SP Aktif</div></div>
+          </div>
+        </div>
+        <div class="profile-grid">
+          <div class="info-card">
+            <h3>📋 Informasi Pribadi</h3>
+            <div class="info-row"><span class="key">Nama Lengkap</span><span class="val" id="profFullName">Admin LogiCorp</span></div>
+            <div class="info-row"><span class="key">ID Karyawan</span><span class="val" id="profId">ADM001</span></div>
+            <div class="info-row"><span class="key">Email</span><span class="val" id="profEmail">admin@logicorp.id</span></div>
+            <div class="info-row"><span class="key">No. HP</span><span class="val">+62 812-3456-7890</span></div>
+            <div class="info-row"><span class="key">Tanggal Lahir</span><span class="val">15 Agustus 1990</span></div>
+            <div class="info-row"><span class="key">Alamat</span><span class="val">Semarang, Jawa Tengah, Indonesia</span></div>
+          </div>
+          <div class="info-card">
+            <h3>🏢 Informasi Pekerjaan</h3>
+            <div class="info-row"><span class="key">Divisi</span><span class="val" id="profDiv">Manajemen</span></div>
+            <div class="info-row"><span class="key">Jabatan</span><span class="val" id="profPos">Administrator</span></div>
+            <div class="info-row"><span class="key">Tanggal Masuk</span><span class="val">1 April 2023</span></div>
+            <div class="info-row"><span class="key">Tipe Kontrak</span><span class="val">Karyawan Tetap</span></div>
+            <div class="info-row"><span class="key">Shift</span><span class="val">Pagi (07:00 - 16:00)</span></div>
+            <div class="info-row"><span class="key">Gaji Pokok</span><span class="val" id="profSalary">Rp 8.500.000</span></div>
+          </div>
+          <div class="info-card">
+            <h3>📈 Rekap Absensi Bulan Ini</h3>
+            <div class="info-row"><span class="key">Hadir</span><span class="val" style="color:var(--accent3)">20 hari</span></div>
+            <div class="info-row"><span class="key">Izin</span><span class="val" style="color:var(--accent2)">1 hari</span></div>
+            <div class="info-row"><span class="key">Sakit</span><span class="val" style="color:var(--warn)">0 hari</span></div>
+            <div class="info-row"><span class="key">Telat</span><span class="val" style="color:var(--accent)">2 kali</span></div>
+            <div class="info-row"><span class="key">Absen Tanpa Ket.</span><span class="val" style="color:var(--danger)">0 hari</span></div>
+            <div class="info-row"><span class="key">Total Jam Kerja</span><span class="val">168 jam</span></div>
+          </div>
+          <div class="info-card">
+            <h3>⚠️ Riwayat SP</h3>
+            <div style="text-align:center;padding:20px;color:var(--muted)">
+              <div style="font-size:40px;margin-bottom:8px">✅</div>
+              <div>Tidak ada catatan pelanggaran</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KARYAWAN -->
+      <div class="page" id="page-karyawan">
+        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap">
+          <input class="search-box" style="width:250px" placeholder="🔍 Cari nama atau ID karyawan..." oninput="filterTable(this,'empTable')">
+          <select class="select-box" onchange="filterByDivisi(this)">
+            <option value="">Semua Divisi</option>
+            <option>Logistik</option><option>Pengemudi</option><option>Gudang</option>
+            <option>Administrasi</option><option>Manajemen</option>
+          </select>
+          <button class="btn btn-primary" onclick="openModal('addEmpModal')">+ Tambah Karyawan</button>
+        </div>
+        <div class="table-card">
+          <div class="table-head"><h3>Data Karyawan (248 orang)</h3></div>
+          <table id="empTable">
+            <thead><tr><th>Karyawan</th><th>Divisi</th><th>Jabatan</th><th>Shift</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#f97316">AS</div><div><div style="font-weight:600">Agus Santoso</div><div style="font-size:11px;color:var(--muted)">EMP001</div></div></div></td><td>Pengemudi</td><td>Driver Senior</td><td>Pagi</td><td><span class="badge green">Aktif</span></td><td><button class="btn btn-ghost btn-sm" onclick="viewEmp('Agus Santoso')">Detail</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#3b82f6">SR</div><div><div style="font-weight:600">Siti Rahmawati</div><div style="font-size:11px;color:var(--muted)">EMP002</div></div></div></td><td>Administrasi</td><td>Staff Admin</td><td>Pagi</td><td><span class="badge green">Aktif</span></td><td><button class="btn btn-ghost btn-sm" onclick="viewEmp('Siti Rahmawati')">Detail</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#10b981">BW</div><div><div style="font-weight:600">Bambang Widodo</div><div style="font-size:11px;color:var(--muted)">EMP003</div></div></div></td><td>Gudang</td><td>Supervisor</td><td>Malam</td><td><span class="badge green">Aktif</span></td><td><button class="btn btn-ghost btn-sm" onclick="viewEmp('Bambang Widodo')">Detail</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#8b5cf6">MP</div><div><div style="font-weight:600">Maya Puspitasari</div><div style="font-size:11px;color:var(--muted)">EMP004</div></div></div></td><td>Logistik</td><td>Koordinator</td><td>Siang</td><td><span class="badge green">Aktif</span></td><td><button class="btn btn-ghost btn-sm" onclick="viewEmp('Maya Puspitasari')">Detail</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#ef4444">DK</div><div><div style="font-weight:600">Dian Kusuma</div><div style="font-size:11px;color:var(--muted)">EMP005</div></div></div></td><td>Pengemudi</td><td>Driver</td><td>Siang</td><td><span class="badge yellow">Probasi</span></td><td><button class="btn btn-ghost btn-sm" onclick="viewEmp('Dian Kusuma')">Detail</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#06b6d4">HF</div><div><div style="font-weight:600">Hendra Firmansyah</div><div style="font-size:11px;color:var(--muted)">EMP006</div></div></div></td><td>Manajemen</td><td>Manajer Operasional</td><td>Pagi</td><td><span class="badge green">Aktif</span></td><td><button class="btn btn-ghost btn-sm" onclick="viewEmp('Hendra Firmansyah')">Detail</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#f59e0b">NR</div><div><div style="font-weight:600">Novi Ratnasari</div><div style="font-size:11px;color:var(--muted)">EMP007</div></div></div></td><td>Administrasi</td><td>Receptionist</td><td>Pagi</td><td><span class="badge red">Non-Aktif</span></td><td><button class="btn btn-ghost btn-sm" onclick="viewEmp('Novi Ratnasari')">Detail</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ABSENSI -->
+      <div class="page" id="page-absensi">
+        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center">
+          <select class="select-box" onchange="updateMonth(this)">
+            <option>Maret 2026</option><option>Februari 2026</option><option>Januari 2026</option>
+          </select>
+          <input class="search-box" style="width:220px" placeholder="🔍 Cari karyawan...">
+          <button class="btn btn-primary" onclick="showToast('Laporan absensi diunduh!')">📥 Export Excel</button>
+        </div>
+        <div class="table-card" style="margin-bottom:16px;padding:20px">
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:12px">📅 Kalender Absensi — Maret 2026</h3>
+          <div class="legend">
+            <div class="leg"><div class="leg-dot" style="background:var(--accent3)"></div>Hadir</div>
+            <div class="leg"><div class="leg-dot" style="background:var(--warn)"></div>Telat</div>
+            <div class="leg"><div class="leg-dot" style="background:var(--danger)"></div>Absen</div>
+            <div class="leg"><div class="leg-dot" style="background:var(--accent2)"></div>Izin/Sakit</div>
+            <div class="leg"><div class="leg-dot" style="background:var(--bg2)"></div>Libur</div>
+          </div>
+          <div class="attend-grid">
+            <div class="day-header">Sen</div><div class="day-header">Sel</div><div class="day-header">Rab</div>
+            <div class="day-header">Kam</div><div class="day-header">Jum</div><div class="day-header">Sab</div><div class="day-header">Min</div>
+            <!-- Week 1 -->
+            <div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell weekend">1</div><div class="day-cell weekend">2</div>
+            <!-- Week 2 -->
+            <div class="day-cell hadir">3</div><div class="day-cell hadir">4</div><div class="day-cell hadir">5</div><div class="day-cell hadir">6</div><div class="day-cell hadir">7</div><div class="day-cell weekend">8</div><div class="day-cell weekend">9</div>
+            <!-- Week 3 -->
+            <div class="day-cell hadir">10</div><div class="day-cell telat">11</div><div class="day-cell hadir">12</div><div class="day-cell izin">13</div><div class="day-cell hadir">14</div><div class="day-cell weekend">15</div><div class="day-cell weekend">16</div>
+            <!-- Week 4 -->
+            <div class="day-cell hadir">17</div><div class="day-cell hadir">18</div><div class="day-cell hadir">19</div><div class="day-cell hadir">20</div><div class="day-cell hadir">21</div><div class="day-cell weekend">22</div><div class="day-cell weekend">23</div>
+            <!-- Week 5 -->
+            <div class="day-cell hadir">24</div><div class="day-cell hadir">25</div><div class="day-cell hadir">26</div><div class="day-cell hadir" style="border:2px solid var(--accent)">27</div><div class="day-cell empty">28</div><div class="day-cell weekend">29</div><div class="day-cell weekend">30</div>
+            <div class="day-cell empty">31</div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-head"><h3>Rekap Absensi Per Karyawan</h3></div>
+          <table>
+            <thead><tr><th>Karyawan</th><th>Hadir</th><th>Telat</th><th>Izin</th><th>Sakit</th><th>Absen</th><th>%</th><th>Aksi</th></tr></thead>
+            <tbody>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#f97316">AS</div><strong>Agus Santoso</strong></div></td><td style="color:var(--accent3)">20</td><td style="color:var(--warn)">1</td><td style="color:var(--accent2)">1</td><td>0</td><td style="color:var(--danger)">0</td><td><span class="badge green">95%</span></td><td><button class="btn btn-ghost btn-sm">Detail</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#3b82f6">SR</div><strong>Siti Rahmawati</strong></div></td><td style="color:var(--accent3)">18</td><td style="color:var(--warn)">3</td><td style="color:var(--accent2)">0</td><td>1</td><td style="color:var(--danger)">0</td><td><span class="badge blue">86%</span></td><td><button class="btn btn-ghost btn-sm">Detail</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#ef4444">DK</div><strong>Dian Kusuma</strong></div></td><td style="color:var(--accent3)">15</td><td style="color:var(--warn)">4</td><td style="color:var(--accent2)">2</td><td>0</td><td style="color:var(--danger)">1</td><td><span class="badge orange">71%</span></td><td><button class="btn btn-ghost btn-sm">Detail</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GAJI -->
+      <div class="page" id="page-gaji">
+        <div class="salary-filter">
+          <select class="select-box"><option>Maret 2026</option><option>Februari 2026</option></select>
+          <select class="select-box"><option>Semua Divisi</option><option>Logistik</option><option>Pengemudi</option></select>
+          <button class="btn btn-primary" onclick="showToast('Slip gaji dikirim ke email karyawan!')">📧 Kirim Slip Gaji</button>
+          <button class="btn btn-ghost" onclick="showToast('Laporan gaji diunduh!')">📥 Export</button>
+        </div>
+        <div class="salary-summary">
+          <div class="sal-card"><h4>Total Pengeluaran Gaji</h4><div class="amount">Rp 2.487.500.000</div><div style="font-size:12px;color:var(--muted);margin-top:4px">248 karyawan</div></div>
+          <div class="sal-card"><h4>Rata-rata Gaji</h4><div class="amount orange">Rp 10.030.000</div></div>
+          <div class="sal-card"><h4>Belum Diproses</h4><div class="amount green">12 karyawan</div></div>
+        </div>
+        <div class="table-card">
+          <div class="table-head"><h3>Detail Penggajian Karyawan</h3><button class="btn btn-primary btn-sm" onclick="openModal('payModal')">+ Input Gaji</button></div>
+          <table>
+            <thead><tr><th>Karyawan</th><th>Gaji Pokok</th><th>Tunjangan</th><th>Lembur</th><th>Potongan</th><th>Total</th><th>Status</th><th>Slip</th></tr></thead>
+            <tbody>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#f97316">AS</div><strong>Agus Santoso</strong></div></td><td>Rp 5.500.000</td><td>Rp 750.000</td><td>Rp 300.000</td><td>Rp 220.000</td><td style="font-weight:700;color:var(--accent3)">Rp 6.330.000</td><td><span class="badge green">Lunas</span></td><td><button class="btn btn-ghost btn-sm" onclick="showSlip('Agus Santoso')">📄 Lihat</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#3b82f6">SR</div><strong>Siti Rahmawati</strong></div></td><td>Rp 4.200.000</td><td>Rp 500.000</td><td>Rp 0</td><td>Rp 168.000</td><td style="font-weight:700;color:var(--accent3)">Rp 4.532.000</td><td><span class="badge green">Lunas</span></td><td><button class="btn btn-ghost btn-sm" onclick="showSlip('Siti Rahmawati')">📄 Lihat</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#10b981">BW</div><strong>Bambang Widodo</strong></div></td><td>Rp 6.800.000</td><td>Rp 1.200.000</td><td>Rp 450.000</td><td>Rp 272.000</td><td style="font-weight:700;color:var(--accent3)">Rp 8.178.000</td><td><span class="badge yellow">Pending</span></td><td><button class="btn btn-ghost btn-sm">📄 Lihat</button></td></tr>
+              <tr><td><div class="emp-cell"><div class="emp-av" style="background:#ef4444">DK</div><strong>Dian Kusuma</strong></div></td><td>Rp 4.000.000</td><td>Rp 300.000</td><td>Rp 0</td><td>Rp 400.000</td><td style="font-weight:700;color:var(--accent)">Rp 3.900.000</td><td><span class="badge red">Ditahan</span></td><td><button class="btn btn-ghost btn-sm">📄 Lihat</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- JADWAL SHIFT -->
+      <div class="page" id="page-shift">
+        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center">
+          <select class="select-box"><option>Minggu ini (24-30 Mar)</option><option>Minggu depan</option></select>
+          <button class="btn btn-primary" onclick="openModal('shiftModal')">+ Atur Jadwal</button>
+        </div>
+        <div class="table-card" style="padding:20px;margin-bottom:16px">
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px">Jadwal Shift Minggu Ini</h3>
+          <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+            <div class="leg"><div class="leg-dot" style="background:var(--accent3)"></div>Shift Pagi (07:00-15:00)</div>
+            <div class="leg"><div class="leg-dot" style="background:var(--accent)"></div>Shift Siang (15:00-23:00)</div>
+            <div class="leg"><div class="leg-dot" style="background:var(--accent2)"></div>Shift Malam (23:00-07:00)</div>
+          </div>
+          <div class="shift-grid">
+            <div class="shift-day"><h4>SENIN 24</h4>
+              <div class="shift-slot pagi"><div class="time">07:00-15:00</div><div class="name">Agus S.</div></div>
+              <div class="shift-slot pagi"><div class="time">07:00-15:00</div><div class="name">Siti R.</div></div>
+              <div class="shift-slot malam"><div class="time">23:00-07:00</div><div class="name">Bambang W.</div></div>
+            </div>
+            <div class="shift-day"><h4>SELASA 25</h4>
+              <div class="shift-slot pagi"><div class="time">07:00-15:00</div><div class="name">Agus S.</div></div>
+              <div class="shift-slot siang"><div class="time">15:00-23:00</div><div class="name">Dian K.</div></div>
+            </div>
+            <div class="shift-day"><h4>RABU 26</h4>
+              <div class="shift-slot pagi"><div class="time">07:00-15:00</div><div class="name">Maya P.</div></div>
+              <div class="shift-slot malam"><div class="time">23:00-07:00</div><div class="name">Bambang W.</div></div>
+            </div>
+            <div class="shift-day"><h4>KAMIS 27</h4>
+              <div class="shift-slot pagi"><div class="time">07:00-15:00</div><div class="name">Agus S.</div></div>
+              <div class="shift-slot pagi"><div class="time">07:00-15:00</div><div class="name">Siti R.</div></div>
+              <div class="shift-slot siang"><div class="time">15:00-23:00</div><div class="name">Dian K.</div></div>
+            </div>
+            <div class="shift-day"><h4>JUMAT 28</h4>
+              <div class="shift-slot pagi"><div class="time">07:00-15:00</div><div class="name">Maya P.</div></div>
+              <div class="shift-slot malam"><div class="time">23:00-07:00</div><div class="name">Bambang W.</div></div>
+            </div>
+            <div class="shift-day" style="opacity:.5"><h4>SABTU 29</h4><div style="font-size:11px;color:var(--muted);text-align:center;padding:10px">Libur</div></div>
+            <div class="shift-day" style="opacity:.5"><h4>MINGGU 30</h4><div style="font-size:11px;color:var(--muted);text-align:center;padding:10px">Libur</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SP -->
+      <div class="page" id="page-sp">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div style="display:flex;gap:8px">
+            <span class="badge yellow" style="font-size:13px;padding:6px 14px">SP-I: 4 aktif</span>
+            <span class="badge orange" style="font-size:13px;padding:6px 14px">SP-II: 2 aktif</span>
+            <span class="badge red" style="font-size:13px;padding:6px 14px">SP-III: 1 aktif</span>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('spModal')">+ Buat SP Baru</button>
+        </div>
+        <div class="sp-grid">
+          <div class="sp-card">
+            <div class="sp-level"><span class="sp-badge sp1">SP-I</span><span style="font-size:11px;color:var(--muted)">15 Mar 2026</span></div>
+            <div class="sp-name">Dian Kusuma (EMP005)</div>
+            <div class="sp-reason">Keterlambatan berulang lebih dari 4 kali dalam 1 bulan. Karyawan telah diperingatkan secara lisan sebanyak 2 kali sebelumnya.</div>
+            <div class="sp-footer"><span>Pengemudi • Divisi Operasional</span><button class="btn btn-ghost btn-sm">Detail</button></div>
+          </div>
+          <div class="sp-card">
+            <div class="sp-level"><span class="sp-badge sp1">SP-I</span><span style="font-size:11px;color:var(--muted)">12 Mar 2026</span></div>
+            <div class="sp-name">Fadli Nugroho (EMP034)</div>
+            <div class="sp-reason">Tidak hadir tanpa keterangan selama 2 hari berturut-turut tanpa memberikan konfirmasi kepada atasan.</div>
+            <div class="sp-footer"><span>Gudang • Divisi Operasional</span><button class="btn btn-ghost btn-sm">Detail</button></div>
+          </div>
+          <div class="sp-card">
+            <div class="sp-level"><span class="sp-badge sp2">SP-II</span><span style="font-size:11px;color:var(--muted)">5 Mar 2026</span></div>
+            <div class="sp-name">Rian Setiawan (EMP089)</div>
+            <div class="sp-reason">Pengulangan pelanggaran setelah SP-I (keterlambatan + tidak mematuhi SOP bongkar muat barang). SP-I diterbitkan Januari 2026.</div>
+            <div class="sp-footer"><span>Logistik • Divisi Gudang</span><button class="btn btn-ghost btn-sm">Detail</button></div>
+          </div>
+          <div class="sp-card">
+            <div class="sp-level"><span class="sp-badge sp1">SP-I</span><span style="font-size:11px;color:var(--muted)">20 Feb 2026</span></div>
+            <div class="sp-name">Wati Susilowati (EMP112)</div>
+            <div class="sp-reason">Menggunakan handphone saat jam kerja berlangsung dan tidak mematuhi teguran supervisor di lapangan.</div>
+            <div class="sp-footer"><span>Admin • Divisi Administrasi</span><button class="btn btn-ghost btn-sm">Detail</button></div>
+          </div>
+          <div class="sp-card">
+            <div class="sp-level"><span class="sp-badge sp2">SP-II</span><span style="font-size:11px;color:var(--muted)">1 Feb 2026</span></div>
+            <div class="sp-name">Joko Susanto (EMP067)</div>
+            <div class="sp-reason">Mengendarai kendaraan perusahaan dalam kondisi melebihi batas kecepatan dan menyebabkan insiden minor di area gudang.</div>
+            <div class="sp-footer"><span>Pengemudi • Divisi Operasional</span><button class="btn btn-ghost btn-sm">Detail</button></div>
+          </div>
+          <div class="sp-card">
+            <div class="sp-level"><span class="sp-badge sp3">SP-III</span><span style="font-size:11px;color:var(--muted)">15 Jan 2026</span></div>
+            <div class="sp-name">Heri Kurniawan (EMP023)</div>
+            <div class="sp-reason">Pelanggaran berat: terbukti mengambil barang inventaris perusahaan untuk kepentingan pribadi. Dalam proses PHK.</div>
+            <div class="sp-footer"><span>Gudang • Divisi Operasional</span><button class="btn btn-danger btn-sm">Proses PHK</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAT HRD -->
+      <div class="page" id="page-chat">
+        <div class="chat-container">
+          <div class="chat-list">
+            <div class="chat-list-head">
+              <h3>💬 Pesan ke HRD</h3>
+              <p>Komplain, pertanyaan, saran</p>
+            </div>
+            <div class="chat-item active" onclick="switchChat('hrd')">
+              <div class="av" style="background:var(--accent);width:36px;height:36px;font-size:14px;flex-shrink:0">HR</div>
+              <div class="chat-item-info">
+                <h4>Tim HRD</h4>
+                <p>Baik, kami akan segera proses...</p>
+                <div class="time">10:42</div>
+              </div>
+            </div>
+            <div class="chat-item" onclick="switchChat('gaji')">
+              <div class="av" style="background:var(--accent3);width:36px;height:36px;font-size:14px;flex-shrink:0">💰</div>
+              <div class="chat-item-info">
+                <h4>Pertanyaan Gaji</h4>
+                <p>Slip gaji Februari belum...</p>
+                <div class="time">Kemarin</div>
+              </div>
+              <div class="chat-unread">2</div>
+            </div>
+            <div class="chat-item" onclick="switchChat('cuti')">
+              <div class="av" style="background:var(--accent2);width:36px;height:36px;font-size:14px;flex-shrink:0">📅</div>
+              <div class="chat-item-info">
+                <h4>Pengajuan Cuti</h4>
+                <p>Cuti saya sudah disetujui?</p>
+                <div class="time">25 Mar</div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-main">
+            <div class="chat-header">
+              <div class="av" style="background:var(--accent);width:36px;height:36px;font-size:14px">HR</div>
+              <div>
+                <h4>Tim HRD LogiCorp</h4>
+                <p><span class="status-dot"></span> Online</p>
+              </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-msg theirs">
+                <div class="msg-tag">KOMPLAIN</div>
+                <div class="bubble">Selamat pagi! Dengan HRD LogiCorp. Ada yang bisa kami bantu?</div>
+                <div class="meta">Tim HRD • 09:00</div>
+              </div>
+              <div class="chat-msg mine">
+                <div class="bubble">Selamat pagi. Saya ingin menanyakan mengenai tunjangan transportasi saya yang belum masuk di slip gaji bulan Maret.</div>
+                <div class="meta">Anda • 09:15</div>
+              </div>
+              <div class="chat-msg theirs">
+                <div class="bubble">Terima kasih sudah menghubungi kami. Bisa disebutkan ID karyawan Bapak/Ibu? Kami akan segera cek ke bagian payroll.</div>
+                <div class="meta">Tim HRD • 09:18</div>
+              </div>
+              <div class="chat-msg mine">
+                <div class="bubble">ID saya EMP001, nama Agus Santoso. Tunjangan transportasi harusnya Rp 500.000 tapi tidak ada di slip.</div>
+                <div class="meta">Anda • 09:20</div>
+              </div>
+              <div class="chat-msg theirs">
+                <div class="bubble">Baik Pak Agus, kami sudah catat. Tim payroll sedang kami hubungi. Akan ada konfirmasi dalam 1x24 jam kerja. Mohon bersabar 🙏</div>
+                <div class="meta">Tim HRD • 10:42</div>
+              </div>
+            </div>
+            <div class="chat-input">
+              <select class="select-box" style="width:130px;padding:8px 10px;font-size:12px">
+                <option>💬 Umum</option>
+                <option>💰 Gaji</option>
+                <option>📅 Cuti/Izin</option>
+                <option>⚠️ SP</option>
+                <option>🔧 Lainnya</option>
+              </select>
+              <input id="chatInput" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter')sendChat()">
+              <button class="send-btn" onclick="sendChat()">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAPORAN -->
+      <div class="page" id="page-laporan">
+        <div style="display:flex;gap:10px;margin-bottom:20px">
+          <select class="select-box"><option>Maret 2026</option><option>Q1 2026</option></select>
+          <button class="btn btn-primary" onclick="showToast('Laporan diekspor ke PDF!')">📥 Export PDF</button>
+        </div>
+        <div class="stats-grid" style="margin-bottom:20px">
+          <div class="stat-card orange"><div class="stat-icon">📦</div><div class="stat-val">1.247</div><div class="stat-label">Pengiriman Selesai</div><div class="stat-change up">↑ 12% bulan lalu</div></div>
+          <div class="stat-card green"><div class="stat-icon">⏱️</div><div class="stat-val">98.2%</div><div class="stat-label">Ketepatan Waktu</div><div class="stat-change up">↑ 0.8% bulan lalu</div></div>
+          <div class="stat-card blue"><div class="stat-icon">🚛</div><div class="stat-val">42</div><div class="stat-label">Armada Aktif</div><div class="stat-change up">Utilisasi: 87%</div></div>
+          <div class="stat-card red"><div class="stat-icon">🔧</div><div class="stat-val">3</div><div class="stat-label">Insiden Keselamatan</div><div class="stat-change down">↑ 1 dari bulan lalu</div></div>
+        </div>
+        <div class="report-grid">
+          <div class="rep-card">
+            <h4>📊 Kehadiran Per Divisi</h4>
+            <div class="bar-row"><div class="bar-label">Logistik</div><div class="bar-track"><div class="bar-fill" style="width:94%;background:var(--accent3)"></div></div><div class="bar-val">94%</div></div>
+            <div class="bar-row"><div class="bar-label">Pengemudi</div><div class="bar-track"><div class="bar-fill" style="width:89%;background:var(--accent2)"></div></div><div class="bar-val">89%</div></div>
+            <div class="bar-row"><div class="bar-label">Gudang</div><div class="bar-track"><div class="bar-fill" style="width:91%;background:var(--accent)"></div></div><div class="bar-val">91%</div></div>
+            <div class="bar-row"><div class="bar-label">Administrasi</div><div class="bar-track"><div class="bar-fill" style="width:97%;background:var(--warn)"></div></div><div class="bar-val">97%</div></div>
+            <div class="bar-row"><div class="bar-label">Manajemen</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent3)"></div></div><div class="bar-val">100%</div></div>
+          </div>
+          <div class="rep-card">
+            <h4>💰 Distribusi Penggajian</h4>
+            <div class="bar-row"><div class="bar-label">Gaji Pokok</div><div class="bar-track"><div class="bar-fill" style="width:78%;background:var(--accent2)"></div></div><div class="bar-val">78%</div></div>
+            <div class="bar-row"><div class="bar-label">Tunjangan</div><div class="bar-track"><div class="bar-fill" style="width:14%;background:var(--accent3)"></div></div><div class="bar-val">14%</div></div>
+            <div class="bar-row"><div class="bar-label">Lembur</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:var(--accent)"></div></div><div class="bar-val">6%</div></div>
+            <div class="bar-row"><div class="bar-label">Potongan</div><div class="bar-track"><div class="bar-fill" style="width:4%;background:var(--danger)"></div></div><div class="bar-val">-4%</div></div>
+          </div>
+          <div class="rep-card">
+            <h4>⚠️ Pelanggaran Per Kategori</h4>
+            <div class="bar-row"><div class="bar-label">Keterlambatan</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--warn)"></div></div><div class="bar-val">18 kss</div></div>
+            <div class="bar-row"><div class="bar-label">Absen</div><div class="bar-track"><div class="bar-fill" style="width:27%;background:var(--accent)"></div></div><div class="bar-val">8 kss</div></div>
+            <div class="bar-row"><div class="bar-label">Pelanggaran SOP</div><div class="bar-track"><div class="bar-fill" style="width:17%;background:var(--danger)"></div></div><div class="bar-val">5 kss</div></div>
+            <div class="bar-row"><div class="bar-label">Lainnya</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--muted)"></div></div><div class="bar-val">3 kss</div></div>
+          </div>
+          <div class="rep-card">
+            <h4>🚛 Performa Armada</h4>
+            <div class="bar-row"><div class="bar-label">Utilitas</div><div class="bar-track"><div class="bar-fill" style="width:87%;background:var(--accent3)"></div></div><div class="bar-val">87%</div></div>
+            <div class="bar-row"><div class="bar-label">Tepat Waktu</div><div class="bar-track"><div class="bar-fill" style="width:98%;background:var(--accent2)"></div></div><div class="bar-val">98%</div></div>
+            <div class="bar-row"><div class="bar-label">BBM Efisiensi</div><div class="bar-track"><div class="bar-fill" style="width:76%;background:var(--accent)"></div></div><div class="bar-val">76%</div></div>
+            <div class="bar-row"><div class="bar-label">Kondisi Armada</div><div class="bar-track"><div class="bar-fill" style="width:93%;background:var(--accent3)"></div></div><div class="bar-val">93%</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="addEmpModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('addEmpModal')">✕</button>
+    <h3>👤 Tambah Karyawan Baru</h3>
+    <div class="form-row"><div class="form-group"><label class="form-label">Nama Lengkap</label><input class="form-input" placeholder="Nama lengkap"></div><div class="form-group"><label class="form-label">ID Karyawan</label><input class="form-input" placeholder="EMP248"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Divisi</label><select class="form-input"><option>Logistik</option><option>Pengemudi</option><option>Gudang</option><option>Administrasi</option></select></div><div class="form-group"><label class="form-label">Jabatan</label><input class="form-input" placeholder="Jabatan"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Gaji Pokok</label><input class="form-input" placeholder="Rp 0"></div><div class="form-group"><label class="form-label">Shift</label><select class="form-input"><option>Pagi</option><option>Siang</option><option>Malam</option></select></div></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" placeholder="email@logicorp.id"></div>
+    <div class="form-group"><label class="form-label">No. HP</label><input class="form-input" placeholder="+62 8xx-xxxx-xxxx"></div>
+    <div class="form-group"><label class="form-label">Tipe Kontrak</label><select class="form-input"><option>Karyawan Tetap</option><option>Kontrak</option><option>Magang</option></select></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('addEmpModal')">Batal</button><button class="btn btn-primary" onclick="closeModal('addEmpModal');showToast('Karyawan baru berhasil ditambahkan!')">Simpan</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="spModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('spModal')">✕</button>
+    <h3>⚠️ Buat Surat Pelanggaran (SP)</h3>
+    <div class="form-group"><label class="form-label">Karyawan</label><select class="form-input"><option>Pilih karyawan...</option><option>Agus Santoso (EMP001)</option><option>Dian Kusuma (EMP005)</option><option>Fadli Nugroho (EMP034)</option></select></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Level SP</label><select class="form-input"><option>SP-I (Peringatan Pertama)</option><option>SP-II (Peringatan Kedua)</option><option>SP-III (Peringatan Ketiga)</option></select></div><div class="form-group"><label class="form-label">Tanggal</label><input class="form-input" type="date"></div></div>
+    <div class="form-group"><label class="form-label">Kategori Pelanggaran</label><select class="form-input"><option>Keterlambatan</option><option>Absen Tanpa Keterangan</option><option>Pelanggaran SOP</option><option>Kelalaian Tugas</option><option>Pelanggaran Berat</option></select></div>
+    <div class="form-group"><label class="form-label">Uraian Pelanggaran</label><textarea class="form-input" placeholder="Jelaskan detail pelanggaran yang dilakukan..."></textarea></div>
+    <div class="form-group"><label class="form-label">Sanksi</label><textarea class="form-input" placeholder="Sanksi yang diberikan..."></textarea></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('spModal')">Batal</button><button class="btn btn-primary" onclick="closeModal('spModal');showToast('SP berhasil diterbitkan!')">Terbitkan SP</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="payModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('payModal')">✕</button>
+    <h3>💰 Input Data Gaji Karyawan</h3>
+    <div class="form-row"><div class="form-group"><label class="form-label">Karyawan</label><select class="form-input"><option>Pilih karyawan...</option><option>Bambang Widodo (EMP003)</option></select></div><div class="form-group"><label class="form-label">Bulan / Tahun</label><input class="form-input" type="month" value="2026-03"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Gaji Pokok</label><input class="form-input" placeholder="Rp 0"></div><div class="form-group"><label class="form-label">Tunjangan Transport</label><input class="form-input" placeholder="Rp 0"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Tunjangan Makan</label><input class="form-input" placeholder="Rp 0"></div><div class="form-group"><label class="form-label">Lembur</label><input class="form-input" placeholder="Rp 0"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Potongan BPJS</label><input class="form-input" placeholder="Rp 0"></div><div class="form-group"><label class="form-label">Potongan Lain</label><input class="form-input" placeholder="Rp 0"></div></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('payModal')">Batal</button><button class="btn btn-primary" onclick="closeModal('payModal');showToast('Data gaji berhasil disimpan!')">Simpan</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="slipModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('slipModal')">✕</button>
+    <div style="text-align:center;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">🚚 LogiCorp</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Slip Gaji — Maret 2026</div>
+    </div>
+    <div id="slipContent"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('slipModal')">Tutup</button><button class="btn btn-primary" onclick="showToast('Slip gaji diunduh!')">📥 Unduh PDF</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shiftModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('shiftModal')">✕</button>
+    <h3>🔄 Atur Jadwal Shift</h3>
+    <div class="form-group"><label class="form-label">Karyawan</label><select class="form-input"><option>Pilih karyawan...</option></select></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Hari</label><select class="form-input"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option></select></div><div class="form-group"><label class="form-label">Shift</label><select class="form-input"><option>Pagi (07:00-15:00)</option><option>Siang (15:00-23:00)</option><option>Malam (23:00-07:00)</option></select></div></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('shiftModal')">Batal</button><button class="btn btn-primary" onclick="closeModal('shiftModal');showToast('Jadwal shift berhasil diperbarui!')">Simpan</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
