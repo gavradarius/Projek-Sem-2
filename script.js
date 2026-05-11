@@ -1,46 +1,127 @@
-const users = {
-  'ADMIN': { pass:'admin', name:'Admin LogiCorp', role:'Administrator', div:'Manajemen', pos:'Administrator', email:'admin@logicorp.id', salary:'Rp 8.500.000', av:'AD', color:'#f97316' },
-  'EMP001': { pass:'emp123', name:'Agus Santoso', role:'Karyawan', div:'Pengemudi', pos:'Driver Senior', email:'agus@logicorp.id', salary:'Rp 5.500.000', av:'AS', color:'#3b82f6' },
-  'HRD001': { pass:'hrd123', name:'Hani Pertiwi', role:'HRD Manager', div:'HRD', pos:'HRD Manager', email:'hani@logicorp.id', salary:'Rp 9.000.000', av:'HP', color:'#10b981' }
+﻿const users = {
+  'ADMIN': {
+    pass:'admin',
+    name:'Yusuf Akbar',
+    role:'Admin',
+    department:'Manajemen RS Ummat',
+    title:'Administrator',
+    email:'admin@rsummat.id',
+    avatar:'YA',
+    color:'#0f766e'
+  },
+  'DR001': {
+    pass:'dr123',
+    name:'dr. Sinta Aulia',
+    role:'Dokter',
+    department:'Poli Umum',
+    title:'Dokter Umum',
+    email:'sinta@rsummat.id',
+    avatar:'DS',
+    color:'#0ea5b8'
+  },
+  'PT001': {
+    pass:'pt123',
+    name:'Ayu Prameswari',
+    role:'Pasien',
+    department:'Pasien Terdaftar',
+    title:'Pasien',
+    email:'ayu.prameswari@gmail.com',
+    avatar:'AP',
+    color:'#22c55e'
+  }
 };
 
 let currentUser = null;
+const rolePages = {
+  Admin:['dashboard','profil','admin','laporan','chat'],
+  Dokter:['dashboard','profil','dokter','antrian','chat'],
+  Pasien:['dashboard','profil','pasien','riwayat','chat']
+};
+
+console.log('RS Ummat script loaded');
 
 function doLogin() {
   const id = document.getElementById('loginId').value.trim().toUpperCase();
   const pass = document.getElementById('loginPass').value;
   const err = document.getElementById('loginErr');
-  if(users[id] && users[id].pass === pass) {
+
+  if (users[id] && users[id].pass === pass) {
     currentUser = { id, ...users[id] };
     err.style.display = 'none';
     document.getElementById('loginPage').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+    document.getElementById('app').style.display = 'flex';
     document.getElementById('sidebarName').textContent = currentUser.name;
     document.getElementById('sidebarRole').textContent = currentUser.role;
-    document.getElementById('sideAv').textContent = currentUser.av;
+    document.getElementById('sideAv').textContent = currentUser.avatar;
     document.getElementById('sideAv').style.background = currentUser.color;
-    document.getElementById('topAv').textContent = currentUser.av;
+    document.getElementById('topAv').textContent = currentUser.avatar;
     document.getElementById('topAv').style.background = currentUser.color;
+    setRolePages();
     updateProfile();
     updateDate();
+    showPage('dashboard', document.querySelector('.nav-item[data-page="dashboard"]'));
   } else {
     err.style.display = 'block';
   }
 }
-document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key==='Enter') doLogin(); });
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loginPass').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+});
+
+function setRolePages() {
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const page = item.dataset.page;
+    if (!currentUser) {
+      item.style.display = 'none';
+      return;
+    }
+    if (['dashboard','profil','chat'].includes(page)) {
+      item.style.display = '';
+      return;
+    }
+    if (item.classList.contains('role-admin')) {
+      item.style.display = currentUser.role === 'Admin' ? '' : 'none';
+      return;
+    }
+    if (item.classList.contains('role-dokter')) {
+      item.style.display = currentUser.role === 'Dokter' ? '' : 'none';
+      return;
+    }
+    if (item.classList.contains('role-pasien')) {
+      item.style.display = currentUser.role === 'Pasien' ? '' : 'none';
+      return;
+    }
+    item.style.display = 'none';
+  });
+}
+
+function showPage(id) {
+  if (currentUser && !rolePages[currentUser.role].includes(id)) return;
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  const target = document.getElementById('page-' + id);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.page === id));
+  const titles = {
+    dashboard: 'Dashboard', profil: 'Profil Saya', pasien: 'Pendaftaran Pasien', riwayat: 'Riwayat Kunjungan', dokter: 'Jadwal Dokter', antrian: 'Antrian Pasien', admin: 'Manajemen RS', laporan: 'Laporan', chat: 'Chat RS Ummat'
+  };
+  const subtitles = {
+    dashboard: 'Ringkasan operasional rumah sakit', profil: 'Informasi profil Anda', pasien: 'Buat dan kelola janji temu', riwayat: 'Lihat riwayat kunjungan Anda', dokter: 'Jadwal konsultasi dan status', antrian: 'Pasien yang menunggu', admin: 'Pengaturan tim dan pelayanan', laporan: 'Statistik dan kinerja', chat: 'Dukungan layanan'
+  };
+  document.getElementById('pageTitle').textContent = titles[id] || 'RS Ummat';
+  document.getElementById('pageSubtitle').textContent = subtitles[id] || '';
+}
 
 function updateProfile() {
   const u = currentUser;
-  document.getElementById('profAv').textContent = u.av;
+  document.getElementById('profAv').textContent = u.avatar;
   document.getElementById('profAv').style.background = u.color;
   document.getElementById('profName').textContent = u.name;
-  document.getElementById('profRole').textContent = u.pos;
-  document.getElementById('profFullName').textContent = u.name;
+  document.getElementById('profRole').textContent = `${u.title} • ${u.role}`;
   document.getElementById('profId').textContent = u.id;
   document.getElementById('profEmail').textContent = u.email;
-  document.getElementById('profDiv').textContent = u.div;
-  document.getElementById('profPos').textContent = u.pos;
-  document.getElementById('profSalary').textContent = u.salary;
+  document.getElementById('profDiv').textContent = u.department;
+  document.getElementById('profPos').textContent = u.title;
 }
 
 function doLogout() {
@@ -48,17 +129,7 @@ function doLogout() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginId').value = '';
   document.getElementById('loginPass').value = '';
-}
-
-function showPage(id, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  if(el) el.classList.add('active');
-  const titles = { dashboard:'Dashboard', profil:'Profil Saya', karyawan:'Data Karyawan',
-    absensi:'Absensi', gaji:'Penggajian', shift:'Jadwal Shift', sp:'Surat Pelanggaran',
-    chat:'Chat HRD', laporan:'Laporan & Analitik' };
-  document.getElementById('pageTitle').textContent = titles[id] || id;
+  document.getElementById('loginErr').style.display = 'none';
 }
 
 function updateDate() {
@@ -67,170 +138,49 @@ function updateDate() {
   document.getElementById('todayDate').textContent = d.toLocaleDateString('id-ID', opts);
 }
 
-let customSchedules = [];
-
-function addCustomSchedule() {
-  const karyawan = document.getElementById('fleksEmp').value;
-  const tanggal = document.getElementById('fleksDate').value;
-  const shift = document.getElementById('fleksShift').value;
-  const catatan = document.getElementById('fleksCat').value;
-  
-  if(karyawan === 'Pilih karyawan...') {
-    showToast('❌ Pilih karyawan terlebih dahulu!');
-    return;
-  }
-  
-  const tglObj = new Date(tanggal);
-  const tglFormat = tglObj.toLocaleDateString('id-ID', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
-  
-  const schedule = {
-    id: Date.now(),
-    karyawan: karyawan,
-    tanggal: tglFormat,
-    shift: shift,
-    catatan: catatan || 'Jadwal custom'
-  };
-  customSchedules.push(schedule);
-  updateCustomScheduleDisplay();
-  showToast('✅ Jadwal custom berhasil ditambahkan!');
+function bookAppointment() {
+  const name = document.getElementById('bookName').value.trim();
+  const poli = document.getElementById('bookPoli').value;
+  const dokter = document.getElementById('bookDoctor').value;
+  const tanggal = document.getElementById('bookDate').value;
+  const jam = document.getElementById('bookTime').value;
+  if (!name || !tanggal) { showToast('Lengkapi nama dan tanggal janji temu.'); return; }
+  const appointmentDate = new Date(tanggal).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+  const tbody = document.getElementById('appointmentsBody');
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${poli}</td><td>${dokter}</td><td>${appointmentDate}</td><td>${jam}</td><td><span class="badge yellow">Menunggu</span></td>`;
+  tbody.appendChild(row);
+  showToast('Janji temu berhasil dibuat.');
+  document.getElementById('bookNote').value = '';
 }
 
-function updateCustomScheduleDisplay() {
-  const list = document.getElementById('customScheduleList');
-  if(customSchedules.length === 0) {
-    list.innerHTML = '<div style="color:var(--muted);font-size:12px">Belum ada jadwal custom</div>';
-    return;
-  }
-  list.innerHTML = customSchedules.map((s, i) => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:var(--white);border-radius:6px;border-left:3px solid var(--accent);margin-bottom:6px">
-      <div>
-        <strong style="font-size:13px">${s.karyawan}</strong><br>
-        <span style="font-size:11px;color:var(--muted)">${s.tanggal} • ${s.shift}${s.catatan ? ' • ' + s.catatan : ''}</span>
-      </div>
-      <button class="btn btn-ghost btn-sm" onclick="removeCustomSchedule(${s.id})">Hapus</button>
-    </div>
-  `).join('');
-}
-
-function removeCustomSchedule(id) {
-  customSchedules = customSchedules.filter(s => s.id !== id);
-  updateCustomScheduleDisplay();
-  showToast('🗑️ Jadwal custom dihapus');
-}
-
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
-});
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = '✅ ' + msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function filterTable(input, tableId) {
-  const q = input.value.toLowerCase();
-  document.querySelectorAll('#' + tableId + ' tbody tr').forEach(row => {
-    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
-  });
-}
-
-function viewEmp(name) { showToast('Membuka detail karyawan: ' + name); }
-
-function showSlip(name) {
-  document.getElementById('slipContent').innerHTML = `
-    <div class="info-row"><span class="key">Nama</span><span class="val">${name}</span></div>
-    <div class="info-row"><span class="key">Jabatan</span><span class="val">Driver Senior</span></div>
-    <div class="info-row" style="padding-top:14px"><span class="key">Gaji Pokok</span><span class="val">Rp 5.500.000</span></div>
-    <div class="info-row"><span class="key">Tunjangan Transport</span><span class="val">Rp 500.000</span></div>
-    <div class="info-row"><span class="key">Tunjangan Makan</span><span class="val">Rp 250.000</span></div>
-    <div class="info-row"><span class="key">Lembur (12 jam)</span><span class="val">Rp 300.000</span></div>
-    <div class="info-row" style="color:var(--danger)"><span class="key">Potongan BPJS Kes.</span><span class="val">- Rp 110.000</span></div>
-    <div class="info-row" style="color:var(--danger)"><span class="key">Potongan BPJS TK</span><span class="val">- Rp 110.000</span></div>
-    <div class="info-row" style="border-top:2px solid var(--accent);padding-top:12px;margin-top:4px">
-      <span class="key" style="font-weight:700;color:var(--white)">TOTAL DITERIMA</span>
-      <span class="val" style="color:var(--accent3);font-family:'Syne',sans-serif;font-size:18px;font-weight:800">Rp 6.330.000</span>
-    </div>`;
-  openModal('slipModal');
-}
-
+function markNextPatient() { showToast('Pasien berikutnya diproses. Silakan periksa detail antrian.'); }
+function showToast(message) { const t = document.getElementById('toast'); t.textContent = message; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 function sendChat() {
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if(!msg) return;
-  const msgs = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'chat-msg mine';
-  div.innerHTML = `<div class="bubble">${msg}</div><div class="meta">Anda • ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</div>`;
-  msgs.appendChild(div);
-  input.value = '';
-  msgs.scrollTop = msgs.scrollHeight;
+  const input = document.getElementById('chatInput'); const message = input.value.trim(); if (!message) return;
+  const messages = document.getElementById('chatMessages');
+  const msgItem = document.createElement('div'); msgItem.className = 'chat-bubble mine'; msgItem.innerHTML = `<p>${message}</p><span>Anda • ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</span>`;
+  messages.appendChild(msgItem); input.value = ''; messages.scrollTop = messages.scrollHeight;
   setTimeout(() => {
-    const rep = document.createElement('div');
-    rep.className = 'chat-msg theirs';
-    rep.innerHTML = `<div class="bubble">Pesan Anda sudah kami terima. Tim HRD akan segera menindaklanjuti. Terima kasih 🙏</div><div class="meta">Tim HRD • ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</div>`;
-    msgs.appendChild(rep);
-    msgs.scrollTop = msgs.scrollHeight;
-  }, 1200);
-}
-
-function switchChat(type) {
-  document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-}
-
-function filterByDivisi(sel) {
-  const val = sel.value.toLowerCase();
-  document.querySelectorAll('#empTable tbody tr').forEach(row => {
-    row.style.display = (!val || row.textContent.toLowerCase().includes(val)) ? '' : 'none';
-  });
+    const reply = document.createElement('div'); reply.className = 'chat-bubble theirs'; reply.innerHTML = `<p>Terima kasih. Tim RS Ummat akan segera menindaklanjuti permintaan Anda.</p><span>Tim RS • ${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</span>`;
+    messages.appendChild(reply); messages.scrollTop = messages.scrollHeight;
+  }, 1000);
 }
 
 function toggleSidebar() {
-  const sidebar = document.querySelector('.sidebar');
-  const hamburger = document.getElementById('hamburgerMenu');
-  const isOpen = sidebar.classList.contains('open');
-
-  if (isOpen) {
-    sidebar.classList.remove('open');
-    hamburger.classList.remove('open');
-    document.body.classList.remove('sidebar-open');
-    document.body.style.overflow = '';
-  } else {
-    sidebar.classList.add('open');
-    hamburger.classList.add('open');
-    document.body.classList.add('sidebar-open');
-    document.body.style.overflow = 'hidden';
-  }
+  const sidebar = document.querySelector('.sidebar'); const hamburger = document.getElementById('hamburgerMenu'); const open = sidebar.classList.toggle('open'); hamburger.classList.toggle('open', open); document.body.style.overflow = open ? 'hidden' : '';
 }
 
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', function(event) {
-  const sidebar = document.querySelector('.sidebar');
-  const hamburger = document.getElementById('hamburgerMenu');
+window.doLogin = doLogin;
+window.showPage = showPage;
+window.toggleSidebar = toggleSidebar;
+window.sendChat = sendChat;
+window.bookAppointment = bookAppointment;
+window.doLogout = doLogout;
 
-  if (window.innerWidth <= 767) {
-    if (!sidebar.contains(event.target) && !hamburger.contains(event.target) && sidebar.classList.contains('open')) {
-      toggleSidebar();
-    }
-  }
-});
-
-// Handle window resize
-window.addEventListener('resize', function() {
-  const sidebar = document.querySelector('.sidebar');
-  const hamburger = document.getElementById('hamburgerMenu');
-
-  if (window.innerWidth > 767) {
-    sidebar.classList.remove('open');
-    hamburger.classList.remove('open');
-    document.body.style.overflow = '';
-  }
+window.addEventListener('resize', () => {
+  const sidebar = document.querySelector('.sidebar'); const hamburger = document.getElementById('hamburgerMenu');
+  if (window.innerWidth > 767) { sidebar.classList.remove('open'); hamburger.classList.remove('open'); document.body.style.overflow = ''; }
 });
 
 updateDate();
-updateCustomScheduleDisplay();

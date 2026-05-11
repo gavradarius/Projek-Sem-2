@@ -1,141 +1,152 @@
-# LogiCorp - Sistem Manajemen Karyawan
+# RS Scheduler — Sistem Penjadwalan Rumah Sakit
 
-Sistem HR Management untuk perusahaan logistik dengan fitur lengkap manajemen karyawan, absensi, penggajian, dan pelaporan.
+Sistem penjadwalan rumah sakit yang dirancang untuk menangani booking pasien, jadwal dokter, jadwal poli, ruang tindakan, dan antrian secara terpadu.
 
 ## 🚀 Fitur Utama
 
-- **Login Multi-Role**: Admin, HRD, dan Karyawan
-- **Dashboard Real-time**: Statistik karyawan dan aktivitas
-- **Manajemen Karyawan**: Data lengkap karyawan
-- **Absensi Otomatis**: Upload data absensi dengan pelanggaran & SP
-- **Penggajian**: Slip gaji dan kalkulasi otomatis
-- **Jadwal Shift**: Jadwal mingguan + custom kapan saja
-- **Surat Pelanggaran**: Sistem SP-I, SP-II, SP-III
-- **Chat HRD**: Komunikasi internal
-- **Laporan & Analitik**: Dashboard performa perusahaan- **📱 Responsive Design**: Bisa dibuka di semua device
-- **⚡ PWA Ready**: Bisa diinstall sebagai app mobile
+- **Booking Online Pasien**: Pilih poli, dokter, dan slot waktu langsung dari web interface.
+- **Reschedule & Pembatalan**: Ubah jadwal secara mandiri tanpa telepon.
+- **Notifikasi Otomatis**: Reminder H-1 via WhatsApp atau email.
+- **Manajemen Shift Dokter/Perawat**: Atur jam praktik rutin dan jadwal operasi.
+- **Dashboard Harian Medis**: Tampilkan pasien hari ini berdasarkan urutan waktu.
+- **Status Ketersediaan Dokter**: On-Call / Emergency toggle cepat.
+- **Master Data Admin**: Kelola data poli, dokter, fasilitas, dan kuota sesi.
+- **Pengaturan Ruang & Alat**: Hindari bentrok jadwal ruang operasi, MRI, atau ambulans.
+- **Kalender Jadwal**: Lihat slot tersedia, cuti dokter, dan status real-time.
 
-## 📱 Responsive & PWA
+## 🗄️ Struktur Database (Logika Relasi)
 
-### Responsive Design
-Website ini fully responsive dan bisa dibuka di:
-- **📱 Mobile Phone** (320px - 767px)
-- **📟 Tablet** (768px - 1023px)
-- **💻 Desktop** (1024px+)
-- **🖥️ Large Desktop** (1440px+)
+Tabel minimal:
 
-### PWA Features
-- **Install sebagai App**: Bisa diinstall di home screen mobile
-- **Offline Support**: Bisa dibuka tanpa internet (cache)
-- **Native App Feel**: Full screen, no browser UI
-- **Fast Loading**: Optimized untuk mobile
+- `patients`
+  - `id`, `nama`, `no_rm`, `no_hp`, `alamat`
+- `doctors`
+  - `id`, `nama`, `spesialisasi`, `jam_praktik`, `status`
+- `clinics`
+  - `id`, `nama_poli`, `kuota`, `ruang`, `fasilitas`
+- `appointments`
+  - `id`, `patient_id`, `doctor_id`, `clinic_id`, `tanggal`, `jam`, `keluhan`, `status`
+- `rooms`
+  - `id`, `nama_ruang`, `tipe`, `kapasitas`, `status`
+- `operations`
+  - `id`, `doctor_id`, `room_id`, `tanggal`, `jam_mulai`, `jam_selesai`, `status`
 
-### Cara Install PWA
-1. Buka website di browser mobile (Chrome/Safari)
-2. Tap menu **"Add to Home Screen"**
-3. Ikon akan muncul di home screen seperti app native
-## 📦 Setup & Deploy
+## 🧭 Alur Kerja Sistem
 
-### 1. Upload ke GitHub
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/username/repository-name.git
-git push -u origin main
-```
+1. Front office login
+2. Input pasien baru atau pilih pasien existing
+3. Pilih poli dan dokter
+4. Pilih tanggal & jam dari slot yang tersedia
+5. Simpan booking dan masukkan ke kalender
+6. Dokter/perawat login untuk melihat antrean
+7. Dokter update status: Menunggu, Dipanggil, Pemeriksaan, Selesai
 
-### 2. Aktifkan GitHub Pages
-1. Buka repository di GitHub
-2. Pergi ke **Settings** → **Pages**
-3. Pada **Source**, pilih **GitHub Actions**
-4. Workflow akan otomatis berjalan setiap push ke branch `main`
+## 🩺 Menu Website
 
-### 3. Deploy Mudah (Windows)
-Untuk memudahkan deploy, gunakan script `deploy.bat`:
+- Dashboard
+- Jadwal Pasien
+- Booking Jadwal
+- Data Dokter
+- Data Poli
+- Kalender Jadwal
+- Riwayat Pemeriksaan
 
-```bash
-# Klik 2x file deploy.bat atau jalankan di command prompt:
-deploy.bat
-```
+## 📌 Status Jadwal
 
-Script akan:
-- ✅ Auto `git add .`
-- ✅ Auto `git commit` (dengan pesan yang Anda masukkan)
-- ✅ Auto `git push` ke GitHub
-- ✅ Trigger GitHub Actions untuk deploy
+- Menunggu
+- Dipanggil
+- Pemeriksaan
+- Selesai
+- Ditunda
 
-### 4. Manual Deploy (Command Line)
-```bash
-# Inisialisasi git (pertama kali)
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/username/repository-name.git
-git push -u origin main
+## 🔧 Teknologi yang Disarankan
 
-# Setiap update selanjutnya
-git add .
-git commit -m "Update fitur absensi"
-git push origin main
-```
+- Frontend: **React.js** atau **Vue.js**
+- Backend: **Node.js** atau **Laravel**
+- Real-time: **WebSockets**
+- Kalender: **FullCalendar.io**
+
+## 📋 Field Penting
+
+- Nama pasien
+- Nomor rekam medis
+- Keluhan
+- Poli tujuan
+- Dokter
+- Tanggal
+- Jam
+- Prioritas
+- Status
+
+## 🏥 Contoh Data
+
+- Pasien: Ahmad
+- Poli: Umum
+- Dokter: dr. Sinta
+- Tanggal: 20 Juni
+- Jam: 09:00
+- Status: Menunggu
+
+## 🗂️ Flow Rumah Sakit
+
+- Front office login
+- Input pasien / pilih pasien
+- Pilih poli
+- Pilih dokter
+- Pilih tanggal & jam
+- Simpan booking
+- Masuk kalender
+- Dokter login
+- Dokter lihat antrean
+- Update status pemeriksaan
+
+## 📄 Setup & Deploy
+
+Jika Anda ingin menjalankan proyek ini sebagai HTML/CSS/JS statis:
+
+1. Buka `index.html` di browser
+2. Ubah `script.js` dan `styles.css` sesuai kebutuhan
+3. Deploy ke GitHub Pages atau server static
 
 ## 🔐 Demo Akun
 
 | Role | ID | Password |
 |------|----|----------|
 | Admin | `admin` | `admin` |
-| Karyawan | `EMP001` | `emp123` |
-| HRD | `HRD001` | `hrd123` |
+| Dokter | `DR001` | `dr123` |
+| Perawat | `NR001` | `nr123` |
 
 ## 🛠️ Teknologi
 
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Styling**: Custom CSS dengan CSS Variables
-- **Icons**: Emoji + Custom SVG
+- **Frontend**: HTML5, CSS3, JavaScript
+- **Styling**: Custom CSS dengan variabel
 - **Fonts**: Google Fonts (Syne, DM Sans)
-- **Deploy**: GitHub Pages + GitHub Actions
+- **Deployment**: GitHub Pages / static hosting
 
 ## 📁 Struktur File
 
 ```
-├── index.html          # Halaman utama
-├── script.js           # Logika JavaScript
-├── styles.css          # Styling CSS
-├── .github/
-│   └── workflows/
-│       └── deploy.yml  # GitHub Actions workflow
+├── index.html          # Halaman utama sistem penjadwalan rumah sakit
+├── script.js           # Logika aplikasi dan navigasi
+├── styles.css          # Styling UI
+├── manifest.json       # Progressive Web App manifest
+├── sw.js               # Service worker (offline caching)
+├── deploy.bat          # Deploy helper
 └── README.md           # Dokumentasi
 ```
 
-## 🎯 Cara Penggunaan
+## 🎯 Konsep Baru
 
-1. **Login** dengan akun demo
-2. **Dashboard** untuk overview perusahaan
-3. **Data Karyawan** untuk manajemen karyawan
-4. **Absensi** untuk upload data dan lihat pelanggaran
-5. **Penggajian** untuk proses gaji
-6. **Jadwal Shift** untuk atur jadwal kerja
-7. **SP** untuk surat pelanggaran
-8. **Chat HRD** untuk komunikasi
-9. **Laporan** untuk analitik performa
-
-## 📊 Fitur Absensi
-
-- Upload data absensi via CSV/Excel
-- Deteksi pelanggaran otomatis
-- Sistem SP berjenjang (I-II-III)
-- Potongan gaji otomatis
-- Kalender absensi interaktif
-
-## 🔄 Update Otomatis
-
-Website akan otomatis update setiap kali Anda push perubahan ke GitHub. Tidak perlu manual deploy lagi!
+Aplikasi sekarang fokus pada penjadwalan rumah sakit dengan:
+- Booking pasien online
+- Reschedule / pembatalan mandiri
+- Notifikasi H-1
+- Manajemen dokter, perawat, dan ruang tindakan
+- Kalender jadwal medis
+- Riwayat pemeriksaan dan antrian pasien
 
 ---
 
-**Dibuat untuk**: Mata Kuliah Semester 2
+**Dibuat untuk**: Sistem Penjadwalan Rumah Sakit
 **Teknologi**: Web Programming
 **Tahun**: 2026
